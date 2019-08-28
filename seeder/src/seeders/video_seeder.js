@@ -1,15 +1,16 @@
 const faker = require('faker')
 const axios = require('axios').default
 const FormData = require('form-data')
+const fs = require('fs');
+const videosFolder = `${__dirname}/../../videos`
 
 module.exports = {
     uploadFile: async function(videoName){
         var formData = new FormData()
-        const fs = require('fs');
 
-        var files=fs.readdirSync('C:\\projects\\seeder\\videos');
+        var files=fs.readdirSync(videosFolder);
         var fileName=files[faker.random.number(files.length-1)]
-        formData.append('video',fs.createReadStream( `videos/${fileName}`))
+        formData.append('video',fs.createReadStream( `${videosFolder}/${fileName}`))
         formData.append('name', videoName)
 
 
@@ -20,11 +21,10 @@ module.exports = {
     },
     uploadFileWithCaption: async function(videoName){
         var formData = new FormData()
-        const fs = require('fs');
 
-        var files=fs.readdirSync('C:\\projects\\seeder\\videos');
+        var files=fs.readdirSync(videosFolder);
         var fileName=files[faker.random.number(files.length-1)]
-        formData.append('video',fs.createReadStream( `videos/${fileName}`))
+        formData.append('video',fs.createReadStream( `${videosFolder}/${fileName}`))
         formData.append('name', videoName)
 
 
