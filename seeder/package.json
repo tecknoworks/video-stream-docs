@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "C:\\Users\\gheorghe.sava\\AppData\\Roaming\\npm\\nodemon.cmd src/index.js"
+    "start": "nodemon src/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +17,10 @@
     "faker": "^4.1.0",
     "ffmpeg-extract-frames": "^2.0.2",
     "fluent-ffmpeg": "^2.1.2",
-    "form-data": "^2.5.0"
+    "follow-redirects": "^1.8.1",
+    "form-data": "^2.5.0",
+    "morgan": "^1.9.1",
+    "node-fetch": "^2.6.0",
+    "nodemon": "^1.19.1"
   }
 }

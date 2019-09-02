@@ -1,31 +1,46 @@
 const axios = require('axios').default
 const faker = require('faker')
-const VideoSeeder = require('./video_seeder')
-const ImageSeeder = require('./image_seeder')
-const ExtractFrame = require('../helpers/extract_frame')
+const fs = require('fs');
+
+const fetch = require('node-fetch');
+const FormData = require('form-data');
+
+const imagesFolder = `${__dirname}/../../images`
+const videosFolder = `${__dirname}/../../videos`
 
 module.exports = {
-    seed: async function(){
+    seed: async function(episodeNr){
         var response = await axios.get('http://localhost:3004/tv-shows/all');
         var tvshowList= Array.from(response.data);
         for(var i=0; i<tvshowList.length;i++){
-            for(var j=1;j<=7;j++){
-                for(var k=1;k<=3;k++){
-                    axios.post('http://localhost:3004/tv-shows/episode/',{
-                        title: faker.name.title(),
-                        description: faker.lorem.paragraphs(2,'.'),
-                        seasonNo: j,
-                        episodeNo: k,
-                        tvShowId: tvshowList[i].id,
-                        releaseDate: faker.date.past(10),
-                        createdAt: new Date(),
-                        runtime: faker.random.number(10000)
-                    }).then(async(result)=>{
-                        var fileName=await VideoSeeder.uploadFileWithCaption(result.data.id)
+            for(var j=1;j<=tvshowList[i].seasonNo;j++){
+                for(var k=1; k<=episodeNr;k++){
+                    var formData = new FormData();
+
+                    formData.append('title', faker.name.title())
+                    formData.append('description', faker.lorem.paragraphs(2,'.')),
+                    formData.append('seasonNo', j)
+                    formData.append('episodeNo', k)
+                    formData.append('tvShowId', tvshowList[i].id)
+                    formData.append('releaseDate', faker.date.past(10).toLocaleDateString())
+                    formData.append('createdAt', new Date().toLocaleDateString())
+    
+                    var videoFiles=fs.readdirSync(videosFolder);
+                    formData.append('video', fs.createReadStream( `${videosFolder}/${videoFiles[faker.random.number(videoFiles.length-1)]}`))
+    
+                    await fetch('http://localhost:3004/tv-shows/episode/insert',{
+                        method: 'POST',
+                        body: formData
                     })
-                    setInterval(()=>{},500)
                 }
             }
         }
+    },
+    delete: async function(){
+        var episodeList = await fetch('http://localhost:3004/tv-shows/episode/all').then(res => res.json());
+
+        episodeList.forEach(async (episode) =>{
+            await fetch(`http://localhost:3004/tv-shows/episode/delete?episodeId=${episode.id}`,{method: 'DELETE'})
+        })
     }
 }
