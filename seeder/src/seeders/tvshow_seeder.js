@@ -10,7 +10,7 @@ const landscapeImagesFolder = `${__dirname}/../../images/tv-shows/landscape`
 const videosFolder = `${__dirname}/../../videos`
 
 module.exports={
-    seed: async function(tvshowNr){
+    seed: async function(tvshowNr, seasonsNr){
         var response1 = await axios.get('http://localhost:3001/details/genre/all');
         var genreList= Array.from(response1.data);
         
@@ -34,13 +34,12 @@ module.exports={
             formData.append('createdAt', faker.date.recent(1).toLocaleDateString())
             formData.append('genre', genreList[faker.random.number(genreList.length-1)].id)
             formData.append('contentRating', contentRatingList[faker.random.number(contentRatingList.length-1)].id)
-            formData.append('userRating', faker.random.number(10))
             formData.append('actorList', JSON.stringify([ 
                 actorList[faker.random.number(actorList.length-1)].id,
                 actorList[faker.random.number(actorList.length-1)].id,
                 actorList[faker.random.number(actorList.length-1)].id
             ]))
-            formData.append('seasonsNo', 5)
+            formData.append('seasonsNo', seasonsNr)
             
             var portraitImageFiles=fs.readdirSync(portraitImagesFolder);
             formData.append('poster', fs.createReadStream( `${portraitImagesFolder}/${portraitImageFiles[faker.random.number(portraitImageFiles.length-1)]}`))
