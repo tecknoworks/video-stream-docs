@@ -5,7 +5,8 @@ const fs = require('fs');
 const FormData = require('form-data');
 const fetch = require('node-fetch');
 
-const imagesFolder = `${__dirname}/../../images`
+const portraitImagesFolder = `${__dirname}/../../images/tv-shows/portrait`
+const landscapeImagesFolder = `${__dirname}/../../images/tv-shows/landscape`
 const videosFolder = `${__dirname}/../../videos`
 
 module.exports={
@@ -41,8 +42,11 @@ module.exports={
             ]))
             formData.append('seasonsNo', 5)
             
-            var imageFiles=fs.readdirSync(imagesFolder);
-            formData.append('poster', fs.createReadStream( `${imagesFolder}/${imageFiles[faker.random.number(imageFiles.length-1)]}`))
+            var portraitImageFiles=fs.readdirSync(portraitImagesFolder);
+            formData.append('poster', fs.createReadStream( `${portraitImagesFolder}/${portraitImageFiles[faker.random.number(portraitImageFiles.length-1)]}`))
+
+            var landscapeImageFiles=fs.readdirSync(landscapeImagesFolder);
+            formData.append('landscapePoster', fs.createReadStream( `${landscapeImagesFolder}/${landscapeImageFiles[faker.random.number(landscapeImageFiles.length-1)]}`))
 
             var videoFiles=fs.readdirSync(videosFolder);
             formData.append('trailer', fs.createReadStream( `${videosFolder}/${videoFiles[faker.random.number(videoFiles.length-1)]}`))
@@ -55,7 +59,8 @@ module.exports={
 
     },
     delete: async function(){
-        var tvShowList = await fetch('http://localhost:3004/tv-shows/all').then(res => res.json());
+        var tvShowList = await fetch('http://localhost:3004/tv-shows/all',{method: 'GET'}).then(res => res.json());
+
 
         tvShowList.forEach(async (tvShow) =>{
             await fetch(`http://localhost:3004/tv-shows/delete?tvShowId=${tvShow.id}`,{method: 'DELETE'})

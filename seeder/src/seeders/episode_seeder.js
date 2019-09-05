@@ -11,9 +11,10 @@ const videosFolder = `${__dirname}/../../videos`
 module.exports = {
     seed: async function(episodeNr){
         var response = await axios.get('http://localhost:3004/tv-shows/all');
+        
         var tvshowList= Array.from(response.data);
         for(var i=0; i<tvshowList.length;i++){
-            for(var j=1;j<=tvshowList[i].seasonNo;j++){
+            for(var j=1;j<=tvshowList[i].seasonsNo;j++){
                 for(var k=1; k<=episodeNr;k++){
                     var formData = new FormData();
 
@@ -27,7 +28,7 @@ module.exports = {
     
                     var videoFiles=fs.readdirSync(videosFolder);
                     formData.append('video', fs.createReadStream( `${videosFolder}/${videoFiles[faker.random.number(videoFiles.length-1)]}`))
-    
+
                     await fetch('http://localhost:3004/tv-shows/episode/insert',{
                         method: 'POST',
                         body: formData

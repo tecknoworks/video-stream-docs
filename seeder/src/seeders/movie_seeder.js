@@ -5,7 +5,8 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const FormData = require('form-data');
 
-const imagesFolder = `${__dirname}/../../images`
+const portraitImagesFolder = `${__dirname}/../../images/movies/portrait`
+const landscapeImagesFolder = `${__dirname}/../../images/movies/landscape`
 const videosFolder = `${__dirname}/../../videos`
 
 module.exports ={
@@ -29,19 +30,21 @@ module.exports ={
                     formData.append('title',faker.name.title())
                     formData.append('description',faker.lorem.paragraphs(2,'.'))
                     formData.append('producer',producerList[Math.floor(faker.random.number(producerList.length-1))].id)
-                    formData.append('releaseDate',faker.date.past().toDateString())
+                    formData.append('releaseDate',faker.date.between('2019-01-01','2019-12-31').toDateString())
                     formData.append('createdAt',faker.date.recent(1).toDateString())
                     formData.append('genre',genreList[Math.floor(faker.random.number(genreList.length-1))].id)
                     formData.append('contentRating',contentRatingList[Math.floor(faker.random.number(contentRatingList.length-1))].id)
-                    formData.append('userRating',faker.random.number(9)+1)
                     formData.append('actorList',JSON.stringify([ 
                         actorList[Math.floor(faker.random.number(actorList.length-1))].id,
                         actorList[Math.floor(faker.random.number(actorList.length-1))].id,
                         actorList[Math.floor(faker.random.number(actorList.length-1))].id
                     ]))
 
-                    var imageFiles=fs.readdirSync(imagesFolder);
-                    formData.append('poster', fs.createReadStream( `${imagesFolder}/${imageFiles[faker.random.number(imageFiles.length-1)]}`))
+                    var portraitImageFiles=fs.readdirSync(portraitImagesFolder);
+                    formData.append('poster', fs.createReadStream( `${portraitImagesFolder}/${portraitImageFiles[faker.random.number(portraitImageFiles.length-1)]}`))
+
+                    var landscapeImageFiles=fs.readdirSync(landscapeImagesFolder);
+                    formData.append('landscapePoster', fs.createReadStream( `${landscapeImagesFolder}/${landscapeImageFiles[faker.random.number(landscapeImageFiles.length-1)]}`))
 
                     var videoFiles=fs.readdirSync(videosFolder);
                     formData.append('video', fs.createReadStream( `${videosFolder}/${videoFiles[faker.random.number(videoFiles.length-1)]}`))

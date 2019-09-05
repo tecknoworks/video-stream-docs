@@ -1,4 +1,9 @@
-seeder/images
+seeder/images/movies/landscape/*
+seeder/images/movies/portrait/*
+
+seeder/images/tv-shows/landscape/*
+seeder/images/tv-shows/portrait/*
+
 seeder/videos
 # Logs
 logs
