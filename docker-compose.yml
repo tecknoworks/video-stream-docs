@@ -1,0 +1,98 @@
+version: "2"
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    networks: 
+      - internal-network
+  asset-service:
+    build: ./asset-service
+    expose:
+      - "3002"
+    networks: 
+      - internal-network
+  auth-service:
+    build: ./auth-service
+    expose:
+      - "3007"
+    depends_on:
+      - mongo
+    networks: 
+      - internal-network
+  movie-service:
+    build: ./movie-service
+    expose:
+      - "3000"
+    depends_on:
+      - mongo
+    networks: 
+      - internal-network
+  rating-service:
+    build: ./rating-service
+    expose:
+      - "3008"
+    depends_on:
+      - mongo
+    networks: 
+      - internal-network
+  ris-service:
+    build: ./ris-service
+    expose:
+      - "3006"
+    networks: 
+      - internal-network
+  screenplay-details-service:
+    build: ./screenplay-details-service
+    expose:
+      - "3001"
+    depends_on:
+      - mongo
+    networks: 
+      - internal-network
+  tv-show-service:
+    build: ./tv-show-service
+    expose:
+      - "3004"
+    depends_on:
+      - mongo
+    networks: 
+      - internal-network
+  video-history-service:
+    build: ./video-history-service
+    expose:
+      - "3005"
+    depends_on:
+      - mongo
+    networks: 
+      - internal-network
+  video-service:
+    build: ./video-service
+    expose:
+      - "3003"
+    networks: 
+      - internal-network
+  video-stream-docs:
+    build: ./video-stream-docs
+    ports:
+      - "3020:3020"
+    networks: 
+      - internal-network
+  web-app:
+    build: ./web-app
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api-gateway
+  mongo:
+    image: mongo:latest
+    expose:
+      - "27017"
+    networks: 
+      - internal-network
+
+networks: 
+  internal-network:
+    driver: bridge

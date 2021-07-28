@@ -1,0 +1,1 @@
+FOR /f "tokens=*" %%i in ('DIR /a:d /b') DO start cmd /k docker-compose logs --follow %%i 
