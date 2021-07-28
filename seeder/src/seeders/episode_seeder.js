@@ -5,12 +5,14 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const FormData = require('form-data');
 
+const config = require('../config');
+
 const imagesFolder = `${__dirname}/../../images`
 const videosFolder = `${__dirname}/../../videos`
 
 module.exports = {
     seed: async function(episodeNr, seasonsNr){
-        var response = await axios.get('http://localhost:3004/tv-shows/all');
+        var response = await axios.get(`${config.tvShowBaseUrl}/all`);
         
         var tvshowList= Array.from(response.data);
         for(var i=0; i<tvshowList.length;i++){
@@ -29,7 +31,7 @@ module.exports = {
                     var videoFiles=fs.readdirSync(videosFolder);
                     formData.append('video', fs.createReadStream( `${videosFolder}/${videoFiles[faker.random.number(videoFiles.length-1)]}`))
 
-                    await fetch('http://localhost:3004/tv-shows/episode/insert',{
+                    await fetch(`${config.tvShowBaseUrl}/episode/insert`,{
                         method: 'POST',
                         body: formData
                     })
@@ -38,10 +40,10 @@ module.exports = {
         }
     },
     delete: async function(){
-        var episodeList = await fetch('http://localhost:3004/tv-shows/episode/all',{method: 'GET'}).then(res => res.json());
+        var episodeList = await fetch(`${config.tvShowBaseUrl}/episode/all`,{method: 'GET'}).then(res => res.json());
         
         episodeList.forEach(async (episode) =>{
-            await fetch(`http://localhost:3004/tv-shows/episode/delete?episodeId=${episode.id}`,{method: 'DELETE'})
+            await fetch(`${config.tvShowBaseUrl}/episode/delete?episodeId=${episode.id}`,{method: 'DELETE'})
         })
     }
 }

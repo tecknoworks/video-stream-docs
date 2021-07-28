@@ -1,6 +1,7 @@
 const axios =require('axios').default
 const faker = require('faker')
 const fs = require('fs');
+const config = require("../config");
 
 const FormData = require('form-data');
 const fetch = require('node-fetch');
@@ -11,18 +12,17 @@ const videosFolder = `${__dirname}/../../videos`
 
 module.exports={
     seed: async function(tvshowNr, seasonsNr){
-        var response1 = await axios.get('http://localhost:3001/details/genre/all');
+        var response1 = await axios.get(`${config.screenplayDetailsBaseUrl}/genre/all`);
         var genreList= Array.from(response1.data);
         
-        var response2 = await axios.get('http://localhost:3001/details/actor/all');
+        var response2 = await axios.get(`${config.screenplayDetailsBaseUrl}/actor/all`);
         var actorList= Array.from(response2.data);
-
-        
-        var response3 = await axios.get('http://localhost:3001/details/content-rating/all');
+            
+        var response3 = await axios.get(`${config.screenplayDetailsBaseUrl}/content-rating/all`);
         var contentRatingList= Array.from(response3.data);
 
-        var response4 = await axios.get('http://localhost:3001/details/producer/all');
-        var producerList= Array.from(response4.data);                 
+        var response4 = await axios.get(`${config.screenplayDetailsBaseUrl}/producer/all`);
+        var producerList= Array.from(response4.data);               
 
         for(var i=0; i<tvshowNr; i++){
             var formData = new FormData();
@@ -50,19 +50,17 @@ module.exports={
             var videoFiles=fs.readdirSync(videosFolder);
             formData.append('trailer', fs.createReadStream( `${videosFolder}/${videoFiles[faker.random.number(videoFiles.length-1)]}`))
 
-            await fetch('http://localhost:3004/tv-shows/insert',{
+            await fetch(`${config.tvShowBaseUrl}/insert`,{
                 method: 'POST',
                 body: formData
             })
         }
-
     },
     delete: async function(){
-        var tvShowList = await fetch('http://localhost:3004/tv-shows/all',{method: 'GET'}).then(res => res.json());
-
+        var tvShowList = await fetch(`${config.tvShowBaseUrl}/all`,{method: 'GET'}).then(res => res.json());
 
         tvShowList.forEach(async (tvShow) =>{
-            await fetch(`http://localhost:3004/tv-shows/delete?tvShowId=${tvShow.id}`,{method: 'DELETE'})
+            await fetch(`${config.tvShowBaseUrl}/delete?tvShowId=${tvShow.id}`,{method: 'DELETE'})
         })
     }
 }
